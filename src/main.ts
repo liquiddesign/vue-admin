@@ -15,7 +15,7 @@ const cache = new InMemoryCache()
 
 const apolloClient = new ApolloClient({
     cache,
-    uri: 'https://18.196.72.110/eshop-api/',
+    uri: 'http://www.roiwell-api.cz.d4169.masterinter.net/',
 })
 
 const app = createApp({

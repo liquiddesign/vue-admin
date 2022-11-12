@@ -1,5 +1,5 @@
 <template>
-  <BaseFormControl control="input" v-bind="$attrs" />
+  <BaseFormControl control="textarea" v-bind="$attrs" />
 </template>
 
 <script setup lang="ts">

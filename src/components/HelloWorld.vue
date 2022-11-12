@@ -5,7 +5,7 @@ import { useQuery } from '@vue/apollo-composable'
 
 const CHARACTERS_QUERY = gql`
   fragment ProductItem on ProductOutput {
-    uuid
+    uuid,
   }
   query Products {
     products:productMany {

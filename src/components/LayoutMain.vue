@@ -34,14 +34,14 @@
       </div>
       <div class="app-header__content">
         <div class="app-header-left">
-          <div class="search-wrapper" :class="{'active':isSearch}">
+          <div class="search-wrapper">
             <div class="input-holder">
-              <input ref="searchBox" v-model="searchExpression" type="text" class="search-input" placeholder="Vyhledejte klienta, nemovitost">
-              <button class="search-icon" @click="search()">
+              <input ref="searchBox" type="text" class="search-input" placeholder="Vyhledejte klienta, nemovitost">
+              <button class="search-icon">
                 <span />
               </button>
             </div>
-            <button class="bg-transparent border-0 btn-close" @click="closeSearch()">
+            <button class="bg-transparent border-0 btn-close">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-white bi bi-x-lg" viewBox="0 0 16 16">
                 <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
               </svg>
@@ -230,13 +230,14 @@
           <div class="app-sidebar__inner">
             MENU TADY
             <a href="" @click.prevent="$router.push({ name: 'home' })">home</a> | <a href="" @click.prevent="$router.push({ name: 'profile' });">profil</a>
+            <button @click="logout">ODhlasit</button><br>
           </div>
           <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;" /></div><div class="ps__rail-y" style="top: 0px; height: 750px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 397px;" /></div>
         </div>
       </div>
       <div class="app-main__outer">
         <div class="app-main__inner">
-          <button @click="logout">ODhlasit</button><br>
+
           <slot />
         </div>
       </div>
