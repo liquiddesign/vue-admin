@@ -4,11 +4,25 @@
   <p>Ukázka tabulky s 💫 LqGrAphi:</p>
 
   Filter:
+
+
   <BaseForm :input="filters">
-    <BaseFormCheckbox name="hidden" label="Skryté" />
+    <BaseFormCheckbox name="hidden" />
+    <BaseFormInput name="q" />
   </BaseForm>
 
   <BaseGrid :query="query" :page="page" :filters="filters" />
+
+
+
+
+
+
+
+
+
+
+
   PAGE: {{ page }} |
   <button @click="page=1">1</button>
   <button @click="page=2">2</button>
@@ -22,10 +36,11 @@ import gql from "graphql-tag";
 import { ref, reactive } from 'vue';
 import BaseForm from "./BaseForm.vue";
 import BaseFormCheckbox from "./BaseFormCheckbox.vue";
+import BaseFormInput from "./BaseFormInput.vue";
 
-const filters = reactive({});
 
 const page = ref(1);
+const filters = reactive({});
 
 const query = gql`
   fragment ProductItem on ProductOutput {
