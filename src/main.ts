@@ -5,6 +5,7 @@ import "./assets/css/toaster.css";
 import 'font-awesome/css/font-awesome.css';
 import 'pe7-icon/dist/dist/pe-icon-7-stroke.css';
 import 'ionicons-npm/css/ionicons.css';
+import VueToast from 'vue-toast-notification';
 
 import App from './App.vue'
 import { DefaultApolloClient } from '@vue/apollo-composable'
@@ -26,5 +27,5 @@ const app = createApp({
     render: () => h(App),
 });
 app.use(router);
-
+app.use(VueToast, {position: 'top'}).provide('toast', app.config.globalProperties.$toast);;
 app.mount('#app');

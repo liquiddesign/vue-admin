@@ -1,12 +1,12 @@
 <template>
   <BaseWrapper :wrap="wrap">
     <BaseWrapper :wrap="{'form-group position-relative': true,'d-inline-block me-2': inline}">
-      <input v-if="control === 'checkbox'" :id="id" v-bind="$attrs" type="checkbox" :checked="value" :class="controlClass" @input="change(validation, $event)">
-      <input v-if="control === 'radio'" :id="id" v-bind="$attrs" type="radio" :checked="value" :class="controlClass" @input="change(validation, $event)">
+      <input v-if="control === 'checkbox'" :id="id" v-bind="$attrs" type="checkbox" :checked="value" :class="controlClass" :disabled="form.disabled || form.loading" @input="change(validation, $event)">
+      <input v-if="control === 'radio'" :id="id" v-bind="$attrs" type="radio" :checked="value" :class="controlClass" :disabled="form.disabled || form.loading" @input="change(validation, $event)">
       <label v-if="label !== null" :class="labelClass" :for="id">{{ label }}</label>
-      <textarea v-if="control === 'textarea'" :id="id" v-bind="$attrs" :class="controlClass" @input="change(validation, $event)">{{ value }}</textarea>
-      <input v-if="control === 'input'" :id="id" v-bind="$attrs" :type="htmlType" :value="value" :class="controlClass" @input="change(validation, $event)">
-      <select v-if="control === 'select'" :id="id" v-bind="$attrs" :class="controlClass" :value="value" @input="change(validation, $event)"><slot /></select>
+      <textarea v-if="control === 'textarea'" :id="id" v-bind="$attrs" :class="controlClass" :disabled="form.disabled || form.loading"  @input="change(validation, $event)">{{ value }}</textarea>
+      <input v-if="control === 'input'" :id="id" v-bind="$attrs" :type="htmlType" :value="value" :class="controlClass" :disabled="form.disabled || form.loading" @input="change(validation, $event)">
+      <select v-if="control === 'select'" :id="id" v-bind="$attrs" :class="controlClass" :value="value" :disabled="form.disabled || form.loading" @input="change(validation, $event)"><slot /></select>
       <div v-if="validation" class="text-danger" v-for="(error, index) in errors(validation)" :key="index">
         {{ error.$message }}
       </div>

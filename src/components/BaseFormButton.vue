@@ -1,10 +1,8 @@
 <template>
-  <button class="btn" type="submit" v-bind="$attrs">
-    <span v-if="loading" class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true" />
+  <button class="btn" type="submit" :disabled="form.disabled || form.loading" v-bind="$attrs">
+    <span v-if="form.loading || loading" class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true" />
     <slot />
-
-    {{ form }}
-  </button>   {{ validation.$invalid }}
+  </button><!-- {{ validation.$invalid }} -->
 </template>
 
 <script setup lang="ts">

@@ -22,7 +22,8 @@
     "ionicons-npm": "^2.0.1",
     "pe7-icon": "^1.0.4",
     "vue": "^3.2.37",
-    "vue-router": "^4.0"
+    "vue-router": "^4.0",
+    "vue-toast-notification": "3.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.13.7",

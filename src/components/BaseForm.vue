@@ -1,16 +1,16 @@
 <template>
   <form v-bind="$attrs" @submit.prevent="submit(v$)">
     <slot />
-      {{ v$.$invalid }}
   </form>
 </template>
 
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
-import {defineProps, provide, reactive, withDefaults} from 'vue';
-import { useMutation } from '@vue/apollo-composable'
+import {defineEmits, defineProps, onMounted, provide, reactive, ref, withDefaults} from 'vue';
+import {useMutation, useQuery} from '@vue/apollo-composable'
 import {DocumentNode} from "graphql/language";
 
+const emit = defineEmits(['success', 'error']);
 
 const props = withDefaults(defineProps<{
   rules?: object
@@ -18,21 +18,24 @@ const props = withDefaults(defineProps<{
   name?: string
   disabled?: boolean,
   mutation?: DocumentNode
+  query?: DocumentNode
 }>(), {name: 'frm', disabled: false});
 
 
-const { mutate: createProduct, onDone, loading, error } = useMutation(props.mutation);
+const { mutate: createProduct, onDone, onError, loading, error } = useMutation(props.mutation);
 
+
+const remoteData = reactive({result: {}});
 
 const formState = reactive( {name: props.name, disabled: props.disabled, loading: loading, error: error});
 
 onDone(result => {
-  console.log(result.data);
-  // emit
+  emit('success', result);
 });
 
-
-
+onError(error => {
+  emit('error', error);
+});
 
 const v$ = useVuelidate(props.rules ?? {}, props.input);
 provide('validation', props.rules !== undefined ? v$ : null);
@@ -44,11 +47,28 @@ provide('form', formState);
 function submit(val:any)
 {
   val.$touch();
-
-  if (!val.$invalid) {
+  if (!val.$invalid && !formState.loading) {
     createProduct({ input: props.input });
   }
 }
+
+onMounted(() => {
+  if (props.query) {
+    const { onResult, onError: onFetchError, result } = useQuery(props.query);
+
+    remoteData.result = result;
+
+    onResult(result => {
+      // @TODO: object assign deep
+      delete result.data.data['__typename'];
+      Object.assign(props.input, result.data.data);
+    });
+
+    onFetchError(error => {
+      alert('error');
+    });
+  }
+});
 
 
 
