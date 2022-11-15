@@ -13,6 +13,22 @@ table .custom-control{
     min-height:1.0rem;
 }
 
+.app-page-title .page-title-icon {
+    height: 50px;
+    width: 50px;
+    font-size: 1.7rem;
+    padding: 0.6rem
+}
+
+.app-page-title {
+    padding: 1rem 1.5rem;
+}
+
+.pagination-sm .page-link {
+    padding: 0.1rem 0.4rem;
+    font-size: inherit;
+}
+
 table tr.active td { background-color: #f3fff3;}
 table tr.inactive td { color: silver;}
 table tr.inactive td a { color: silver;}
@@ -77,15 +93,6 @@ label {
 .bg-dn-dark
 {
     background-image: linear-gradient(120deg, #3e7100 0%, #89c53f 100%) !important;
-}
-
-.tabs-animated .nav-link.active, .tabs-animated .nav-link:hover {
-    color: #89c53f !important;
-}
-
-.tabs-animated .nav-link::before
-{
-    background: #89c53f !important;
 }
 
 .form-control-sm, .form-select-sm {

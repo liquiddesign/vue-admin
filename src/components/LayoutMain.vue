@@ -1,6 +1,6 @@
 <template>
 
-  <div class="app-container app-theme-white body-tabs-line fixed-header fixed-sidebar">
+  <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
     <div class="app-header header-shadow bg-night-sky header-text-light">
       <div class="app-header__logo">
         <img src="https://www.lqd.cz/public/images/logo-white.svg" alt="" loading="lazy" height="33">
@@ -49,7 +49,7 @@
           </div>
           <ul class="header-megamenu nav">
             <li class="dropdown nav-item show">
-              <a aria-haspopup="true" data-toggle="dropdown" class="nav-link" aria-expanded="true" @click="$router.push({name: 'administrators'})">
+              <a aria-haspopup="true" data-toggle="dropdown" class="nav-link" aria-expanded="true" @click="$router.push({name: 'administratorsUsers'})">
                 <i class="nav-link-icon pe-7s-users" /> Administratori
               </a>
             </li>
@@ -237,7 +237,6 @@
       </div>
       <div class="app-main__outer">
         <div class="app-main__inner">
-
           <slot />
         </div>
       </div>

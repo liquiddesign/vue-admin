@@ -31,10 +31,12 @@ const formState = reactive( {name: props.name, disabled: props.disabled, loading
 
 onDone(result => {
   emit('success', result);
+  alert('ok');
 });
 
 onError(error => {
   emit('error', error);
+  alert(error.message);
 });
 
 const v$ = useVuelidate(props.rules ?? {}, props.input);
