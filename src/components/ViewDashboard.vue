@@ -31,7 +31,7 @@
       <ul class="nav ms-0">
         <li class="nav-item"><a data-toggle="tab" href="#tab-eg5-0" class="active nav-link">Obsah</a></li>
         <li class="nav-item"><a data-toggle="tab" href="#tab-eg5-1" class="nav-link">Ceny</a></li>
-        <li class="nav-item"><a data-toggle="tab" href="#tab-eg5-2" class="nav-link">Zobrazení</a></li>
+        <li class="nav-item"><a data-toggle="tab" href="#tab-eg5-2" class="nav-link disabled">Zobrazení</a></li>
       </ul>
     </div>
     <div class="card-body">

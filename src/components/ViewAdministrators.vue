@@ -21,6 +21,19 @@
       </div>
     </div>
   </div>
+
+  <BasePageTitle title="Role" icon="pe-7s-users" description="Přehled a správa administrátorských rolí">
+    <button type="button" data-toggle="tooltip" title="" data-placement="bottom" class="mr-3 btn btn-alternate" data-original-title="Example Tooltip">
+      <i class="fa fa-life-saver"></i>
+    </button>
+
+    <button type="button" data-toggle="tooltip" title="" data-placement="bottom" class="mr-3 btn btn-success ms-3" data-original-title="Example Tooltip">
+      <i class="fa fa-plus"></i> Přidat roli
+    </button>
+  </BasePageTitle>
+  <BasePageTabs :tabs="{'administratorsRoles': 'Role'}" />
+
+
   <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
     <li class="nav-item">
       <a href="#" role="tab" class="nav-link active" data-toggle="tab" >
@@ -113,6 +126,8 @@ import BaseFormInput from "./BaseFormInput.vue";
 import BaseForm from "./BaseForm.vue";
 import gql from "graphql-tag";
 import {reactive} from "vue";
+import BasePageTabs from "./BasePageTabs.vue";
+import BasePageTitle from "./BasePageTitle.vue";
 
 const query = gql`
   query Roles ($input: ManyInput!) {

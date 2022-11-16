@@ -29,7 +29,7 @@ table .custom-control{
     font-size: inherit;
 }
 
-table tr.active td { background-color: #f3fff3;}
+table tr.active td { background-color: #e5edff;}
 table tr.inactive td { color: silver;}
 table tr.inactive td a { color: silver;}
 table tr.deleted td { color: silver; text-decoration: line-through; }
