@@ -29,6 +29,11 @@ table .custom-control{
     font-size: inherit;
 }
 
+.spinner-grow-xs {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
 table tr.active td { background-color: #e5edff;}
 table tr.inactive td { color: silver;}
 table tr.inactive td a { color: silver;}

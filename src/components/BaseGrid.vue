@@ -42,12 +42,12 @@ const props = withDefaults(defineProps<{
 
 const selected = reactive({});
 let loadinga = ref(false);
-let variables = reactive({input: {page: props.page, limit: 5, filters: props.filters}});
+let variables = reactive({input: {page: props.page, limit: 15, filters: props.filters}});
 
 const remoteData = reactive({result: {}, loading: null, error: null});
 
 const test = computed(function() {
-  return {input: {page: props.page, limit: 5, filters: props.filters}};
+  return {input: {page: props.page, limit: 15, filters: props.filters}};
 });
 
 const selectAll = computed({ get: function () {
@@ -68,25 +68,8 @@ const { mutate: deleteItem } = useMutation(props.delete);
 defineExpose({selectAll, refetch, loading, selected, selectedIds});
 
 function deleteRow(item, index) {
- deleteItem({'uuid': item.uuid}, {update(cache) {
-   const test = item.uuid;
-   //  const object = cache.identify({item, 'RoleOutput'});
-     //console.log(object);
-   // cache.updateQuery({ query }, function (data) { console.log(data)});
-     /*cache.modify({
-       fields: {
-         roleMany(data, field) {
-           console.log(data);
-           console.log(field);
-           // data.data.splice(0,1);
-            data.data[0].name='x';
-            return data;
-         },
-       },
-     });*/
-   }});
-  // refetch
-  //result.value.result.data.splice(index, 1);
+ deleteItem({'uuid': item.uuid});
+ refetch();
 
 }
 
@@ -107,7 +90,10 @@ function orderBy(value) {
 }
 
 onActivated(() => {
-  alert(result.value?.result ? 'ano': 'ne');
+
+  if (result.value?.result ) {
+    refetch();
+  }
   //remoteData.result = result;
  // loadinga = loading;
 });

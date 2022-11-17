@@ -1,25 +1,42 @@
 <template>
-  <form v-bind="$attrs" @submit.prevent="submit(v$)">
-    <slot />
-  </form>
+  <BaseWrapper :wrap="wrap">
+    <form v-bind="$attrs" @submit.prevent="submit">
+      <slot />
+    </form>
+  </BaseWrapper>
 </template>
 
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
-import {defineEmits, defineProps, onMounted, provide, reactive, ref, withDefaults} from 'vue';
+import {
+  defineEmits,
+  defineExpose,
+  defineProps,
+  onActivated,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+  withDefaults
+} from 'vue';
 import {useMutation, useQuery} from '@vue/apollo-composable'
 import {DocumentNode} from "graphql/language";
+import BaseWrapper from "./BaseWrapper.vue";
 
 const emit = defineEmits(['success', 'error']);
+defineExpose({submit});
 
 const props = withDefaults(defineProps<{
   rules?: object
   input: object
+  defaultInput?: any
   name?: string
+  wrap?: string
   disabled?: boolean,
   mutation?: DocumentNode
-  query?: DocumentNode
-}>(), {name: 'frm', disabled: false});
+  query?: DocumentNode|null
+  id?: string|null
+}>(), {name: 'frm', disabled: false, defaultInput: {}});
 
 
 const { mutate: createProduct, onDone, onError, loading, error } = useMutation(props.mutation);
@@ -31,12 +48,10 @@ const formState = reactive( {name: props.name, disabled: props.disabled, loading
 
 onDone(result => {
   emit('success', result);
-  alert('ok');
 });
 
 onError(error => {
   emit('error', error);
-  alert(error.message);
 });
 
 const v$ = useVuelidate(props.rules ?? {}, props.input);
@@ -46,28 +61,38 @@ provide('input', props.input);
 provide('form', formState);
 
 
-function submit(val:any)
+function submit()
 {
-  val.$touch();
-  if (!val.$invalid && !formState.loading) {
+  //console.log(v$.value.$invalid);//.$touch();
+
+  v$.value.$touch();
+  if (!v$.value.$invalid && !formState.loading) {
     createProduct({ input: props.input });
+    v$.value.$reset();
+    if (!props.query || !props.id) {
+      Object.assign(props.input, props.defaultInput);
+    }
+
   }
 }
 
-onMounted(() => {
-  if (props.query) {
-    const { onResult, onError: onFetchError, result } = useQuery(props.query);
+onActivated(() => {
+
+  if (props.id && props.query) {
+    Object.assign(props.input, props.defaultInput);
+    const { onResult, onError: onFetchError, result } = useQuery(props.query, {'uuid': props.id});
 
     remoteData.result = result;
 
     onResult(result => {
       // @TODO: object assign deep
-      delete result.data.data['__typename'];
-      Object.assign(props.input, result.data.data);
+      console.log(result);
+      const test = Object.assign({}, result.data.data);
+      delete test['__typename'];
+      Object.assign(props.input,test);
     });
 
     onFetchError(error => {
-      alert('error');
     });
   }
 });

@@ -1,8 +1,10 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from "vue-router";
 import ViewDashboard from "./components/ViewDashboard.vue";
 import ViewProfile from "./components/ViewProfile.vue";
-import ViewAdministrators from "./components/ViewAdministrators.vue";
 import ViewAdministratorsRoles from "./components/ViewAdministratorsRoles.vue";
+import ViewAdministratorsUsers from "./components/ViewAdministratorsUsers.vue";
+import ViewAdministratorsRolesEdit from "./components/ViewAdministratorsRolesEdit.vue";
+import ViewAdministratorsRolesCreate from "./components/ViewAdministratorsRolesCreate.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -19,8 +21,8 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         name: 'administratorsUsers',
-        path: '/administrators',
-        component: ViewAdministrators,
+        path: '/administrators/users',
+        component: ViewAdministratorsUsers,
         meta: {title: 'Přehled'}
     },
     {
@@ -32,13 +34,13 @@ const routes: Array<RouteRecordRaw> = [
     {
         name: 'administratorsRolesCreate',
         path: '/administrators/roles/create',
-        component: ViewAdministrators,
+        component: ViewAdministratorsRolesCreate,
         meta: {title: 'Přehled', 'permissions': ['users']}
     },
     {
         name: 'administratorsRolesEdit',
         path: '/administrators/roles/edit/:id',
-        component: ViewAdministrators,
+        component: ViewAdministratorsRolesEdit,
         meta: {title: 'Přehled', 'permissions': ['users']}
     },
 ];

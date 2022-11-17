@@ -1,6 +1,6 @@
 <template>
-  <button class="btn" type="submit" :disabled="form.disabled || form.loading" v-bind="$attrs">
-    <span v-if="form.loading || loading" class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true" />
+  <button class="btn btn-sm" type="submit" :disabled="form.disabled || form.loading" v-bind="$attrs">
+    <span v-if="form.loading || loading" class="spinner-grow spinner-grow-xs me-1" role="status" aria-hidden="true" />
     <slot />
   </button><!-- {{ validation.$invalid }} -->
 </template>
