@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, withDefaults, inject, ref, computed, defineEmits} from 'vue';
+import {defineProps, withDefaults, inject, ref, computed} from 'vue';
 import BaseWrapper from "./BaseWrapper.vue";
 
 const input: any = inject('input') as any;

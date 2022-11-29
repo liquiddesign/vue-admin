@@ -13,30 +13,27 @@
 
 <script setup lang="ts">
 import { reactive, provide, watch, onMounted } from 'vue';
-import LayoutLogin from './components/LayoutLogin.vue'
-import LayoutMain from './components/LayoutMain.vue'
+import LayoutLogin from './components/LayoutLogin.vue';
+import LayoutMain from './components/LayoutMain.vue';
+import {useQuery} from "@vue/apollo-composable";
+import {Meta, User} from './types/BaseTypes';
+import gql from "graphql-tag";
 
-interface Meta {
-  buildDate: string|null
-}
-
-interface User {
-  identity:  string|null
-  isLoggedIn: boolean
-}
-
-const user: User = reactive({identity: null, isLoggedIn: false});
+const user: User = reactive({identity: {}, isLoggedIn: false});
 const meta: Meta = reactive({buildDate: null});
 
-function login() {
-  user.isLoggedIn = true;
-  user.identity = 'PES';
-}
+const query = gql`
+  query AuthAdminIsLogged {
+    result:authAdminIsLogged {
+      uuid,
+      fullName,
+    }
+  }
+`
 
-function logout() {
-  user.isLoggedIn = false;
-  user.identity = null;
-}
+const { result, error } = useQuery(query, null, {
+  pollInterval: 60000,
+});
 
 onMounted(() => {
   if (sessionStorage.user) {
@@ -56,7 +53,3 @@ provide('meta', meta);
 provide('user', user);
 
 </script>
-
-<style scoped>
-
-</style>

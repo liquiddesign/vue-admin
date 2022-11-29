@@ -11,7 +11,7 @@
     <template #body>
       <div class="row">
 
-        <BaseForm ref="form" wrap="col-lg-6" :input="input" :default-input="defaultInput" :rules="rules" :mutation="mutation" :query="query" :id="id" @success="success">
+        <BaseEditForm ref="form" wrap="col-lg-6" :input="input" :default-input="defaultInput" :rules="rules" :mutation="mutation" :query="query" :id="id" @success="success">
           <div class="row">
             <BaseFormInput wrap="col-lg-6" name="name" label="Název" />
           </div>
@@ -20,7 +20,7 @@
               <BaseFormButton class="btn-success">Uložit</BaseFormButton>
             </div>
           </div>
-        </BaseForm>
+        </BaseEditForm>
       </div>
     </template>
   </BasePageCard>
@@ -31,17 +31,16 @@
 import BasePageCard from "./BasePageCard.vue";
 import BaseButtonBack from "./BaseButtonBack.vue";
 import BaseButtonSave from "./BaseButtonSave.vue";
-import {reactive, inject, defineProps, onActivated} from 'vue';
-import BaseForm from "./BaseForm.vue";
+import {reactive, inject, defineProps} from 'vue';
 import BaseFormInput from "./BaseFormInput.vue";
 import {required} from "@vuelidate/validators";
 import BaseFormButton from "./BaseFormButton.vue";
 import gql from "graphql-tag";
 import {ToastPluginApi, useToast} from 'vue-toast-notification';
+import BaseEditForm from "./BaseEditForm.vue";
 
 
 const defaultInput = {
-  name: 'x'
 }
 
 const props = defineProps<{
@@ -63,22 +62,19 @@ function success(result: any) {
 }
 
 const mutation = gql`
-      mutation ($input: ${ !props.id ? 'RoleCreateInput' : 'RoleUpdateInput' }!) {
-        data: ${ !props.id ? 'roleCreate' : 'roleUpdate' }(input: $input) {
+      mutation ($input: ${ !props.id ? 'AdminRoleCreateInput' : 'AdminRoleUpdateInput' }!) {
+        data: ${ !props.id ? 'adminRoleCreate' : 'adminRoleUpdate' }(input: $input) {
             uuid
         }
       }
     `
-
-  const query = gql`
-      query ($uuid: ID!) {
-        data: roleOne(uuid: $uuid) {
-          uuid
-          name
-        }
+const query = gql`
+    query ($uuid: ID!) {
+      data: adminRoleOne(uuid: $uuid) {
+        uuid
+        name
       }
-    `;
-
-
+    }
+  `;
 
 </script>

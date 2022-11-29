@@ -179,13 +179,13 @@
           <div class="header-btn-lg pe-0">
             <div class="widget-content p-0">
               <div class="widget-content-wrapper">
-                Menu male
+                <TheProfileMenu />
                 <div class="widget-content-left  ms-3 header-user-info">
                   <div class="widget-heading">
-                   a
+                    {{ user.identity.account.login }}
                   </div>
                   <div class="widget-subheading">
-                   a
+                    {{ user.identity.fullName }}
                   </div>
                 </div>
               </div>
@@ -228,9 +228,7 @@
         </div>
         <div class="scrollbar-sidebar ps ps--active-y">
           <div class="app-sidebar__inner">
-            MENU TADY
-            <a href="" @click.prevent="$router.push({ name: 'home' })">home</a> | <a href="" @click.prevent="$router.push({ name: 'profile' });">profil</a>
-            <button @click="logout">ODhlasit</button><br>
+            <TheMenu />
           </div>
           <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;" /></div><div class="ps__rail-y" style="top: 0px; height: 750px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 397px;" /></div>
         </div>
@@ -254,12 +252,9 @@
 
 import { inject } from 'vue';
 import {User} from '../types/BaseTypes';
+import TheProfileMenu from "./TheProfileMenu.vue";
+import TheMenu from "./TheMenu.vue";
 
 const user: User = inject('user') as User;
-
-function logout() {
-  user.isLoggedIn = false;
-  user.identity = null;
-}
 
 </script>

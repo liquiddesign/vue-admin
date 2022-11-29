@@ -9,42 +9,40 @@
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
 import {
-  defineEmits,
-  defineExpose,
-  defineProps,
-  onActivated,
-  onMounted,
+  defineProps, inject,
   provide,
   reactive,
-  ref,
   withDefaults
 } from 'vue';
-import {useMutation, useQuery} from '@vue/apollo-composable'
+import {useMutation} from '@vue/apollo-composable'
 import {DocumentNode} from "graphql/language";
 import BaseWrapper from "./BaseWrapper.vue";
-
-const emit = defineEmits(['success', 'error']);
-defineExpose({submit});
+import {ToastPluginApi, useToast} from "vue-toast-notification";
 
 const props = withDefaults(defineProps<{
-  rules?: object
+  name?: string
   input: object
   defaultInput?: any
-  name?: string
+  rules?: object
+  mutation: DocumentNode
+  varsCallback?: (input: object) => object,
   wrap?: string
   disabled?: boolean,
-  mutation?: DocumentNode
-  query?: DocumentNode|null
-  id?: string|null
-}>(), {name: 'frm', disabled: false, defaultInput: {}});
+  silent?: boolean
+}>(), {name: 'frm', disabled: false, silent: false, defaultInput: {},  varsCallback: function (input: object) { return input},});
 
+const toast: ToastPluginApi = inject('toast', useToast());
 
-const { mutate: createProduct, onDone, onError, loading, error } = useMutation(props.mutation);
-
-
-const remoteData = reactive({result: {}});
-
+const { mutate: executeMutation, onDone, onError, loading, error } = useMutation(props.mutation);
 const formState = reactive( {name: props.name, disabled: props.disabled, loading: loading, error: error});
+const v$ = useVuelidate(props.rules ?? {}, props.input);
+
+provide('validation', props.rules !== undefined ? v$ : null);
+provide('input', props.input);
+provide('form', formState);
+
+defineExpose({submit, resetInput, loading, error});
+const emit = defineEmits(['success', 'error']);
 
 onDone(result => {
   emit('success', result);
@@ -52,52 +50,27 @@ onDone(result => {
 
 onError(error => {
   emit('error', error);
+
+  if (!props.silent) {
+    toast.error(error.message);
+  }
 });
-
-const v$ = useVuelidate(props.rules ?? {}, props.input);
-provide('validation', props.rules !== undefined ? v$ : null);
-
-provide('input', props.input);
-provide('form', formState);
 
 
 function submit()
 {
-  //console.log(v$.value.$invalid);//.$touch();
-
   v$.value.$touch();
-  if (!v$.value.$invalid && !formState.loading) {
-    createProduct({ input: props.input });
-    v$.value.$reset();
-    if (!props.query || !props.id) {
-      Object.assign(props.input, props.defaultInput);
-    }
 
+  if (!v$.value.$invalid && !formState.loading) {
+    executeMutation(props.varsCallback(props.input));
+    v$.value.$reset();
   }
 }
 
-onActivated(() => {
-
-  if (props.id && props.query) {
-    Object.assign(props.input, props.defaultInput);
-    const { onResult, onError: onFetchError, result } = useQuery(props.query, {'uuid': props.id});
-
-    remoteData.result = result;
-
-    onResult(result => {
-      // @TODO: object assign deep
-      console.log(result);
-      const test = Object.assign({}, result.data.data);
-      delete test['__typename'];
-      Object.assign(props.input,test);
-    });
-
-    onFetchError(error => {
-    });
-  }
-});
-
-
+function resetInput()
+{
+  Object.assign(props.input, props.defaultInput);
+}
 
 
 </script>

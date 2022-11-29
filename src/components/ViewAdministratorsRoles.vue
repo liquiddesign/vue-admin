@@ -1,19 +1,15 @@
 <template>
   <BasePageTitle title="Role" icon="pe-7s-users" description="Přehled a správa administrátorských rolí">
-    <button type="button" class="mr-3 btn btn-sm btn-alternate">
-      <i class="fa fa-life-saver"></i>
-    </button>
-
     <button type="button" class="mr-3 btn btn-success btn-sm ms-3" @click="$router.push({name: 'administratorsRolesCreate'})">
       <i class="fa fa-plus"></i> Přidat roli
     </button>
   </BasePageTitle>
 
-  <BasePageTabs :tabs="{'administratorsUsers': 'Administrátoři', 'administratorsRoles': 'Role', 'administratorsLogs': 'Log přístupů'}" />
+  <BasePageTabs :tabs="{'administratorsUsers': 'Administrátoři', 'administratorsRoles': 'Role'}" />
 
   <BasePageCard>
     <template #body>
-      <BaseGrid ref="grid" :query="query" :delete="mutation">
+      <BaseGrid ref="grid" :query="query" :page="page" :onPage="onPage" :delete="mutation">
         <template #header>
           <tr>
             <BaseGridThSelect />
@@ -26,13 +22,14 @@
         <template #body="{item, deleteRow, selected, index}">
           <tr :class="{active: selected[item.uuid]}">
             <BaseGridTdSelect :id="item.uuid" />
-            <td class="minimal">{{ index }}</td>
+            <td class="minimal">{{ index + (page - 1) * onPage + 1 }}</td>
             <td class="minimal"><BaseGridButtonEdit :route="{name: 'administratorsRolesEdit', params: {id: item.uuid}}" /></td>
             <td>{{ item.name }}</td>
             <td class="minimal"><BaseGridButtonDelete @click="deleteRow"/></td>
           </tr>
         </template>
       </BaseGrid>
+      <BaseGridPaginator :query="pagingQuery" :page="page" :on-page="onPage" @change-page="page = $event"/>
     </template>
   </BasePageCard>
 
@@ -51,22 +48,33 @@ import BaseGridButtonDelete from "./BaseGridButtonDelete.vue";
 import BaseGridThReaload from "./BaseGridThReaload.vue";
 import BaseGridTdSelect from "./BaseGridTdSelect.vue";
 import BaseGridThSelect from "./BaseGridThSelect.vue";
+import BaseGridPaginator from "./BaseGridPaginator.vue";
+import {ref} from "vue";
+
+const page = ref(1);
+const onPage = ref(10);
 
 const query = gql`
   query ($input: ManyInput!) {
-    result:roleMany(manyInput: $input) {
+    result:adminRoleMany(manyInput: $input) {
       data {
         uuid,
         name,
       }
     }
   }
-`
+`;
+
+const pagingQuery = gql`
+  query ($input: ManyInput!) {
+    result:adminRoleManyTotalCount(manyInput: $input)
+  }
+`;
 
 const mutation = gql`
       mutation ($uuid: [ID]!) {
         roleDelete(uuid: $uuid)
       }
-    `
+`;
 
 </script>

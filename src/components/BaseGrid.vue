@@ -37,8 +37,9 @@ const props = withDefaults(defineProps<{
   query: DocumentNode,
   delete?: DocumentNode,
   page?: number
+  onPage?: number
   filters?: any
-}>(), {page: 1, filters: {}});
+}>(), {page: 1, onPage: 10, filters: {}});
 
 const selected = reactive({});
 let loadinga = ref(false);
@@ -47,7 +48,7 @@ let variables = reactive({input: {page: props.page, limit: 15, filters: props.fi
 const remoteData = reactive({result: {}, loading: null, error: null});
 
 const test = computed(function() {
-  return {input: {page: props.page, limit: 15, filters: props.filters}};
+  return {input: {page: props.page, limit: props.onPage, filters: props.filters}};
 });
 
 const selectAll = computed({ get: function () {

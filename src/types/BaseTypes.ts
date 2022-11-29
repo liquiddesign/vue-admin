@@ -3,6 +3,6 @@ export interface Meta {
 }
 
 export interface User {
-    identity:  string|null
+    identity:  object
     isLoggedIn: boolean
 }
