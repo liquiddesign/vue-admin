@@ -5,6 +5,8 @@ import ViewAdministratorsRoles from "./components/ViewAdministratorsRoles.vue";
 import ViewAdministratorsUsers from "./components/ViewAdministratorsUsers.vue";
 import ViewAdministratorsRolesEdit from "./components/ViewAdministratorsRolesEdit.vue";
 import ViewAdministratorsRolesCreate from "./components/ViewAdministratorsRolesCreate.vue";
+import ViewAdministratorsUsersEdit from "./components/ViewAdministratorsUsersEdit.vue";
+import ViewAdministratorsUsersCreate from "./components/ViewAdministratorsUsersCreate.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -24,6 +26,18 @@ const routes: Array<RouteRecordRaw> = [
         path: '/administrators/users',
         component: ViewAdministratorsUsers,
         meta: {title: 'Přehled'}
+    },
+    {
+        name: 'administratorsUsersCreate',
+        path: '/administrators/users/create',
+        component: ViewAdministratorsUsersCreate,
+        meta: {title: 'Přehled', 'permissions': ['users']}
+    },
+    {
+        name: 'administratorsUsersEdit',
+        path: '/administrators/users/edit/:id',
+        component: ViewAdministratorsUsersEdit,
+        meta: {title: 'Přehled', 'permissions': ['users']}
     },
     {
         name: 'administratorsRoles',

@@ -45,7 +45,7 @@ import gql from "graphql-tag";
 import BaseGridButtonEdit from "./BaseGridButtonEdit.vue";
 import BaseGridTh from "./BaseGridTh.vue";
 import BaseGridButtonDelete from "./BaseGridButtonDelete.vue";
-import BaseGridThReaload from "./BaseGridThReaload.vue";
+import BaseGridThReaload from "./BaseGridThReload.vue";
 import BaseGridTdSelect from "./BaseGridTdSelect.vue";
 import BaseGridThSelect from "./BaseGridThSelect.vue";
 import BaseGridPaginator from "./BaseGridPaginator.vue";

@@ -6,7 +6,7 @@
         </thead>
         <tbody>
         <template v-if="result?.result" v-for="(item,i) in result.result.data" :key="i">
-          <slot name="body" :item="decorator(item)" :index="i" :selected="selected" :delete-row="() => deleteRow(item, i)" :update-row="(value) => updateRow(item, value)" />
+          <slot name="body" :item="applyDecorator(item)" :index="i" :selected="selected" :delete-row="() => deleteRow(item, i)" :update-row="(value) => updateRow(item, value)" />
         </template>
         <tr v-if="result?.result && Object.values(result?.result.data).length === 0">
           <td colspan="100%" style="text-align: center; font-style: italic">
@@ -29,7 +29,7 @@
 
 </template>
 <script setup lang="ts">
-import {defineProps, onMounted, reactive, withDefaults, ref, computed, defineExpose, onActivated} from "vue";
+import {defineProps, reactive, withDefaults, computed, defineExpose, onActivated} from "vue";
 import {DocumentNode} from "graphql/language";
 import {useMutation, useQuery} from "@vue/apollo-composable";
 
@@ -41,45 +41,42 @@ const props = withDefaults(defineProps<{
   filters?: any
 }>(), {page: 1, onPage: 10, filters: {}});
 
-const selected = reactive({});
-let loadinga = ref(false);
-let variables = reactive({input: {page: props.page, limit: 15, filters: props.filters}});
-
-const remoteData = reactive({result: {}, loading: null, error: null});
+const selected: any = reactive({});
+const decorator: any = reactive({});
 
 const test = computed(function() {
   return {input: {page: props.page, limit: props.onPage, filters: props.filters}};
 });
 
-const selectAll = computed({ get: function () {
-
+const selectAll = computed({
+  get: function () {
     return result.value?.result.data ? (Object.values(selected).filter( w => w === true).length === result.value?.result.data.length && result.value?.result.data.length > 0) : false;
   },
   set: function (value) {
-    result.value?.result.data.forEach(v => selected[v.uuid] = value);
-  }});
+    result.value?.result.data.forEach((v:any) => selected[v.uuid] = value);
+}});
 
-const { result, loading, error, onError, onResult, refetch } = useQuery(props.query, test);
+const {result, loading, error, onError, onResult, refetch} = useQuery(props.query, test);
 
-const query = props.query;
-
-const { mutate: deleteItem } = useMutation(props.delete);
-
-
-defineExpose({selectAll, refetch, loading, selected, selectedIds});
-
-function deleteRow(item, index) {
- deleteItem({'uuid': item.uuid});
- refetch();
-
+if (props.delete) {
+  const {mutate: deleteItem} = useMutation(props.delete);
 }
 
-function decorator(item) {
- // console.log(item);
-  const display = Object.assign({}, item);
-  display.name += '-TEST';
+defineExpose({loading, selectAll, refetch,  selected, selectedIds, decorator});
 
-  return display;
+function applyDecorator(item: any) {
+  if (!decorator[item.uuid]) {
+    return item;
+  }
+
+  return Object.assign(Object.assign({}, item), decorator[item.uuid]);
+}
+
+function deleteRow(item: any, index) {
+  if (props.delete) {
+    deleteItem({'uuid': item.uuid});
+    refetch();
+  }
 }
 
 function updateRow(item, value) {
@@ -91,15 +88,10 @@ function orderBy(value) {
 }
 
 onActivated(() => {
-
-  if (result.value?.result ) {
+  if (result.value?.result) {
     refetch();
   }
-  //remoteData.result = result;
- // loadinga = loading;
 });
-
-
 
 function selectedIds() {
   return Object.keys(Object.fromEntries(Object.entries(selected).filter(([key, value]) => value) ));
