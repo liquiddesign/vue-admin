@@ -6,7 +6,7 @@
       </keep-alive>
     </router-view>
   </LayoutMain>
-  <LayoutLogin v-else />
+  <LayoutLogin v-else-if="user.isLoggedIn === false" />
 
 </template>
 
@@ -19,7 +19,7 @@ import {useQuery} from "@vue/apollo-composable";
 import {Meta, User} from './types/BaseTypes';
 import gql from "graphql-tag";
 
-const user: User = reactive({identity: {}, isLoggedIn: false});
+const user: User = reactive({identity: {}, isLoggedIn: null});
 const meta: Meta = reactive({buildDate: null});
 
 const query = gql`
@@ -40,6 +40,8 @@ onMounted(() => {
     const aux = JSON.parse(sessionStorage.user);
     user.isLoggedIn = aux.isLoggedIn;
     user.identity = aux.identity;
+  } else {
+    user.isLoggedIn = false;
   }
 
   meta.buildDate = document.documentElement.dataset.buildDate ?? null;

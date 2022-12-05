@@ -9,9 +9,10 @@
 <script setup lang="ts">
 import useVuelidate from "@vuelidate/core";
 import {
+  computed,
   defineProps, inject,
   provide,
-  reactive,
+  reactive, toRef,
   withDefaults
 } from 'vue';
 import {useMutation} from '@vue/apollo-composable'
@@ -28,13 +29,16 @@ const props = withDefaults(defineProps<{
   varsCallback?: (input: object) => object,
   wrap?: string
   disabled?: boolean,
-  silent?: boolean
-}>(), {name: 'frm', disabled: false, silent: false, defaultInput: {},  varsCallback: function (input: object) { return input},});
+  successSilent?: boolean,
+  errorSilent?: boolean
+}>(), {name: 'frm', disabled: false, successSilent: false, errorSilent: false, defaultInput: {},  varsCallback: function (input: object) { return input},});
 
 const toast: ToastPluginApi = inject('toast', useToast());
 
+
 const { mutate: executeMutation, onDone, onError, loading, error } = useMutation(props.mutation);
-const formState = reactive( {name: props.name, disabled: props.disabled, loading: loading, error: error});
+const formState = reactive( {name: props.name, disabled: toRef(props, 'disabled'),loading: loading, error: error});
+
 const v$ = useVuelidate(props.rules ?? {}, props.input);
 
 provide('validation', props.rules !== undefined ? v$ : null);
@@ -46,12 +50,16 @@ const emit = defineEmits(['success', 'error']);
 
 onDone(result => {
   emit('success', result);
+
+  if (!props.successSilent) {
+    toast.success('Uloženo');
+  }
 });
 
 onError(error => {
   emit('error', error);
 
-  if (!props.silent) {
+  if (!props.errorSilent) {
     toast.error(error.message);
   }
 });
@@ -62,7 +70,7 @@ function submit()
   v$.value.$touch();
 
   if (!v$.value.$invalid && !formState.loading) {
-    executeMutation(props.varsCallback(props.input));
+    executeMutation(props.varsCallback(JSON.parse(JSON.stringify(props.input))));
     v$.value.$reset();
   }
 }

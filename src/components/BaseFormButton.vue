@@ -7,9 +7,11 @@
 
 <script setup lang="ts">
 import {defineProps, inject, withDefaults} from 'vue';
+import BaseWrapper from "./BaseWrapper.vue";
 
 const props = withDefaults(defineProps<{
-  loading?: boolean
+  loading?: boolean,
+  wrap?: string
 }>(), {loading: false});
 
 

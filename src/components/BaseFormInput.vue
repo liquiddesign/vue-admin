@@ -4,12 +4,15 @@
 
 <script setup lang="ts">
 import BaseFormControl from "./BaseFormControl.vue";
-import {defineProps} from "vue";
+import {defineProps, inject} from "vue";
 
 
 const props = defineProps<{
   type?: string,
   path?: string[]|number[],
 }>();
+
+const form: any = inject('form') as any;
+
 
 </script>

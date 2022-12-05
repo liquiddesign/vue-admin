@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, defineProps, onActivated} from "vue";
+import {computed, onActivated} from "vue";
 import {DocumentNode} from "graphql/language";
 import {useQuery} from "@vue/apollo-composable";
 

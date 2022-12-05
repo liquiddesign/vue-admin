@@ -4,5 +4,9 @@ export interface Meta {
 
 export interface User {
     identity:  object
-    isLoggedIn: boolean
+    isLoggedIn: boolean|null
+}
+
+export interface Collection<Type> {
+    [key: string]: Type;
 }

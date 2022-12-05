@@ -16,6 +16,7 @@
             <th>ID</th>
             <BaseGridTh class="text-center"> <i class="fa fa-edit" /></BaseGridTh>
             <th>Název</th>
+            <th>Ucet</th>
             <BaseGridThReload />
           </tr>
         </template>
@@ -24,7 +25,8 @@
             <BaseGridTdSelect :id="item.uuid" />
             <td class="minimal">{{ index + (page - 1) * onPage + 1 }}</td>
             <td class="minimal"><BaseGridButtonEdit :route="{name: 'administratorsUsersEdit', params: {id: item.uuid}}" /></td>
-            <td>{{ item.fulName }}</td>
+            <td>{{ item.fullName }}</td>
+            <td>{{ item.accounts[0] }}</td>
             <td class="minimal"><BaseGridButtonDelete @click="deleteRow"/></td>
           </tr>
         </template>
@@ -50,7 +52,7 @@ import BaseGridTdSelect from "./BaseGridTdSelect.vue";
 import BaseGridThSelect from "./BaseGridThSelect.vue";
 import BaseGridPaginator from "./BaseGridPaginator.vue";
 import {ref} from "vue";
-import {gqlCreateMany} from "../utils/helpers";
+import {gqlTagMany} from "../utils/helpers";
 
 const page = ref(1);
 const onPage = ref(10);
@@ -58,13 +60,20 @@ const onPage = ref(10);
 const select = gql`
   fragment Select on AdministratorManyOutput {
     data {
-      uuid
-      fullName
+      uuid,
+      fullName,
+      accounts {
+        login
+        activeFrom
+        activeTo
+        preferredMutation
+        active
+      }
     }
   }
 `;
 
-const {mainQuery, pagingQuery, deleteMutation} = gqlCreateMany('administrator', select);
+const {mainQuery, pagingQuery, deleteMutation} = gqlTagMany('administrator', select);
 
 
 </script>

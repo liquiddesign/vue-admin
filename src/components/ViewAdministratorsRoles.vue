@@ -9,7 +9,7 @@
 
   <BasePageCard>
     <template #body>
-      <BaseGrid ref="grid" :query="query" :page="page" :onPage="onPage" :delete="mutation">
+      <BaseGrid ref="grid" :query="mainQuery" :page="page" :onPage="onPage" :delete="deleteMutation">
         <template #header>
           <tr>
             <BaseGridThSelect />
@@ -50,31 +50,21 @@ import BaseGridTdSelect from "./BaseGridTdSelect.vue";
 import BaseGridThSelect from "./BaseGridThSelect.vue";
 import BaseGridPaginator from "./BaseGridPaginator.vue";
 import {ref} from "vue";
+import {gqlTagMany} from "../utils/helpers";
 
 const page = ref(1);
 const onPage = ref(10);
 
-const query = gql`
-  query ($input: ManyInput!) {
-    result:adminRoleMany(manyInput: $input) {
-      data {
-        uuid,
-        name,
-      }
+const select = gql`
+  fragment Select on AdminRoleManyOutput {
+    data {
+      uuid
+      name
     }
   }
 `;
 
-const pagingQuery = gql`
-  query ($input: ManyInput!) {
-    result:adminRoleManyTotalCount(manyInput: $input)
-  }
-`;
+const {mainQuery, pagingQuery, deleteMutation} = gqlTagMany('adminRole', select);
 
-const mutation = gql`
-      mutation ($uuid: [ID]!) {
-        roleDelete(uuid: $uuid)
-      }
-`;
 
 </script>

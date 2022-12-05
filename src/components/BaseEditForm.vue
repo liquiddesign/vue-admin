@@ -19,9 +19,10 @@ const props = withDefaults(defineProps<{
   varsCallback?: (input: object) => object,
   wrap?: string
   disabled?: boolean,
-  silent?: boolean,
-  id?: string|null
-  query?: DocumentNode|null
+  silent?: boolean
+  query: DocumentNode
+  queryVars: any,
+  id: string
 }>(), {name: 'frm', disabled: false, silent: false, defaultInput: {},  varsCallback: function (input: object) { return {input}},});
 
 const remoteData = reactive({result: {}});
@@ -36,14 +37,12 @@ onActivated(() => {
 
     onFetchResult(result => {
       // @TODO: object assign deep
-      console.log(result);
       const test = Object.assign({}, result.data.data);
       delete test['__typename'];
       Object.assign(props.input,test);
     });
 
     onFetchError(error => {
-      alert('fetch')
     });
   }
 });

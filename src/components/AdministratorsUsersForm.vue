@@ -10,8 +10,7 @@
     </template>
     <template #body>
       <div class="row">
-
-        <BaseEditForm ref="form" wrap="col-lg-6" :input="input" :default-input="defaultInput" :rules="rules" :mutation="mutation" :query="query" :id="id" @success="success">
+        <BaseForm ref="form" wrap="col-lg-6" :input="input" :test="test" :default-input="defaultInput" :disabled="loading" :rules="rules" :mutation="mutation" :vars-callback="callback" @success="success">
           <div class="row">
             <BaseFormInput wrap="col-lg-6" name="fullName" label="Název" />
             <BaseFormInput wrap="col-lg-6" name="role" label="Role" />
@@ -20,19 +19,19 @@
           <div class="form-wrapper-blue">
             <h5 class="card-title">Účet</h5>
             <div class="row">
-              <BaseFormInput wrap="col-lg-6" name="login" label="Login" :path="['accounts']" />
+              <BaseFormInput wrap="col-lg-6" name="login" label="Login" :path="['accounts', '0']" />
             </div>
             <div class="row mt-2">
-              <BaseFormInput wrap="col-lg-6" name="password" label="Heslo" type="password" :path="['accounts']" />
-              <BaseFormInput wrap="col-lg-6" name="password" label="Heslo" type="password" :path="['accounts']" />
+              <BaseFormInput wrap="col-lg-6" name="password" label="Heslo" type="password" autocomplete="off" :path="['accounts', '0']" />
+              <BaseFormInput wrap="col-lg-6" label="Heslo" type="password" autocomplete="off" :path="['accounts', '0']" />
             </div>
             <div class="row mt-2">
-              <BaseFormInput wrap="col-lg-6" name="activeFrom" label="Platnost od" type="datetime-local" :path="['accounts']" />
-              <BaseFormInput wrap="col-lg-6" name="activeTo" label="Platnost do" type="datetime-local" :path="['accounts']" />
+              <BaseFormInput wrap="col-lg-6" name="activeFrom" label="Platnost od" type="datetime-local" :path="['accounts', '0']" />
+              <BaseFormInput wrap="col-lg-6" name="activeTo" label="Platnost do" type="datetime-local" :path="['accounts', '0']" />
             </div>
             <div class="row mt-2">
-              <BaseFormInput wrap="col-lg-6" name="preferredMutation" label="Preferovana mutace" :path="['accounts']" />
-              <BaseFormInput wrap="col-lg-6" name="active" label="Aktivní" :path="['accounts']" />
+              <BaseFormInput wrap="col-lg-6" name="preferredMutation" label="Preferovana mutace" :path="['accounts', '0']" />
+              <BaseFormCheckbox wrap="col-lg-6" name="active" label="Aktivní" :path="['accounts', 0]" />
             </div>
           </div>
           <div class="row mt-2">
@@ -40,7 +39,7 @@
               <BaseFormButton class="btn-success">Uložit</BaseFormButton>
             </div>
           </div>
-        </BaseEditForm>
+        </BaseForm>
       </div>
     </template>
   </BasePageCard>
@@ -51,17 +50,21 @@
 import BasePageCard from "./BasePageCard.vue";
 import BaseButtonBack from "./BaseButtonBack.vue";
 import BaseButtonSave from "./BaseButtonSave.vue";
-import {reactive, inject, defineProps} from 'vue';
+import {reactive, inject, onActivated, ref} from 'vue';
 import BaseFormInput from "./BaseFormInput.vue";
 import {required} from "@vuelidate/validators";
 import BaseFormButton from "./BaseFormButton.vue";
 import gql from "graphql-tag";
 import {ToastPluginApi, useToast} from 'vue-toast-notification';
-import BaseEditForm from "./BaseEditForm.vue";
+import {fetchInput, gqlAssignInput, gqlTagCreate, gqlTagOne, gqlTagUpdate} from "../utils/helpers";
+import {DocumentNode} from "graphql/language";
+import BaseForm from "./BaseForm.vue";
+import {useLazyQuery, useMutation} from "@vue/apollo-composable";
+import BaseFormCheckbox from "./BaseFormCheckbox.vue";
 
 
 const defaultInput = {
-  accounts: {},
+  accounts: {'0': {}},
 }
 
 const props = defineProps<{
@@ -76,40 +79,54 @@ const rules = {
   },
 };
 
+
+const select = gql`
+  fragment Select on AdministratorOutput {
+    uuid
+    fullName
+    accounts {
+      uuid
+      login
+      activeFrom
+      activeTo
+      preferredMutation
+      active
+    }
+  }
+`;
+
+const { load: loadUserQuery, onResult: onUserQueryDone, loading } = useLazyQuery(gqlTagOne('administrator', select));
+props.id && loadUserQuery(undefined, {uuid: props.id});
+onUserQueryDone((result) => gqlAssignInput(input, result.data.data))
+
+
 const toast: ToastPluginApi = inject('toast', useToast());
 
-function success(result: any) {
+const mutationAccount: DocumentNode = props.id ? gqlTagUpdate('administrator') : gqlTagCreate('administrator');
+
+const { mutate, onError } = useMutation(mutationAccount);
+
+const test = ref(1);
+
+function success(result) {
+
   toast.success('uloženaao');
+
+  const inputs2 = Object.assign({}, input);
+
+  delete inputs2['accounts'];
+
+  mutate({input: Object.assign(inputs2,{addAccounts: [result.data.data.uuid]},)});
+  onError(error => console.error(error));
 }
 
-//$helpers.createQqlMutation('administrator', 'update')
-//$helpers.createQqlQuery('administrator', fragment)
 
-/*
-const mutations = ['user' => '', 'account' => ''];
+const callback = function (input: any) {
 
-const callback = function (inputs, mutationName) {
-  if () {
+  return {input: input.accounts[0]};
+}
 
-  }
+const mutation: DocumentNode = props.id ? gqlTagUpdate('account') : gqlTagCreate('account');
 
-  return;
-}*/
-
-const mutation = gql`
-      mutation ($input: ${ !props.id ? 'AdministratorCreateInput' : 'AdministratorUpdateInput' }!) {
-        data: ${ !props.id ? 'administratorCreate' : 'administratorUpdate' }(input: $input) {
-            uuid
-        }
-      }
-    `
-const query = gql`
-    query ($uuid: ID!) {
-      data: administratorOne(uuid: $uuid) {
-        uuid
-        name
-      }
-    }
-  `;
 
 </script>

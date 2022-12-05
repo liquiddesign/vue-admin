@@ -80,7 +80,12 @@ const value = computed(function() {
   }
 
   let ref = input;
-  path.forEach((pathItem) => ref = ref[pathItem])
+  path.forEach(function (pathItem) {
+
+    if (ref !== undefined) {
+      ref = ref[pathItem];
+    }
+  })
 
   if (props.control === 'radio') {
     return props.value === ref[name.value];
